@@ -1,15 +1,8 @@
 a= a?();
-/* OSC */a.o = { |f=0,p=0| [LFCub, LFSaw, LFTri, LFPar, LFPulse, LFGauss].choose.ar(f,p) };
-/* Noise */a.n = { |m=1| [WhiteNoise, BrownNoise, ClipNoise, PinkNoise, GrayNoise].choose.ar(m) };
-/* LFO */a.l = { |...par| [LFNoise0, LFNoise1, LFNoise2].choose.ar(*par) };
+/* OSC */a.o = {|f=440,p=0,m=1,a=0| [LFCub, LFSaw, LFTri, LFPar, LFPulse, LFGauss].choose.ar(f,p,m,a)};//{a[\o].()}.play
+/* Noise */a.n = {|m=1| [WhiteNoise, BrownNoise, ClipNoise, PinkNoise, GrayNoise].choose.ar(m) };//{a[\n].(0.1)}.play
+/* LFO */a.l = {|f=440,m=1,a=0| [LFNoise0, LFNoise1, LFNoise2].choose.ar(f,m,a) };//{a[\o].(a[\l].(2,100,200))}.play
 
-/* Ppar Matrix */~attack.kr;~attack = {|attack=0.1| attack}; a.parMatrix = {|i, o=3, deg, dur, pan, amp, name| Ppar( Array.fill(8, { |j| Pbind(\instrument,  (i.asString ++ 99.rand.round).asSymbol,
-	\octave, o,
-	\degree, Pn( Plazy( {Pseq(t.parts.()*[1,2,3,4],1)})),
-	\dur,    Pn( Plazy( {dur.interpret} ) ),
-	\pan,    pan.interpret,
-	\amp,    amp.interpret,
-	\attack, ~attack,
-	\osc, Pfunc({ |evt| n.sendMsg("instr", name.asString);}))}))};
+/* Ppar Matrix */a.parMatrix = {|i, deg, dur, name=\default| Ppar( Array.fill(i, { |j| Pbind(\instrument,  name, \degree,Pn(Plazy({Pseq(deg)})), \dur,Pn(Plazy({Pseq(dur)})) )}))};//a[\parMatrix].(3,15.fib,1/18.fib.scramble).play
 
-/* Freq Octaver for synth */a.freqOctaver = {|f=440, o=0| ((f.cpsmidi%12) + (12*o)).midicps};//f[\freqOctaver].(f:54,o:4);
+/* Freq Octaver for synth */a.freqOctaver = {|f=440, o=0| ((f.cpsmidi%12) + (12*o)).midicps};//a[\freqOctaver].(f:54,o:4);
