@@ -4,4 +4,12 @@ o = Server.local.options;
 s = Server(\Krach, NetAddr("127.0.0.1", 57111), o);
 ['makeWindow','scope','freqscope','boot'].do{|item|('s.'++item).compile.value}
 )
+
 s.quit
+
+(
+p = ProxySpace.push(s);
+p.makeTempoClock(1)
+p.fadeTime=0;
+p.quant=0;
+)
