@@ -1,2 +1,2 @@
 # supercollider
-SuperCollider Sound Synthesis
+SuperCollider Sound Synthesis :)
